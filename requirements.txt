@@ -1,0 +1,40 @@
+# ========== 测试执行引擎 ==========
+pytest>=7.4.4,<10.0.0
+allure-pytest>=2.13.2,<3.0.0
+pytest-xdist>=3.5.0,<4.0.0
+python-dotenv>=1.2.2,<2.0.0
+pytest-timeout>=2.0.0,<4.0.0
+pytest-rerunfailures>=14.0,<15.0
+tenacity>=8.0.0,<10.0.0
+
+# ========== 性能压测 (Locust) ==========
+locust>=2.20.0,<3.0.0
+
+# ============ UI 自动化 (Playwright) ============
+playwright>=1.40.0,<2.0.0
+pytest-playwright>=0.4.0,<1.0.0
+ddddocr>=1.0.0,<2.0.0
+
+# ========== HTTP 客户端（支持同步和异步） ==========
+requests>=2.31.0,<3.0.0
+httpx>=0.25.0,<1.0.0
+
+# ========== 数据与配置 ==========
+pyyaml>=6.0.1,<7.0.0
+pymysql>=1.1.0,<2.0.0
+psycopg2-binary>=2.9.0,<3.0.0
+redis>=5.0.1,<7.0.0
+faker>=25.0.0,<27.0.0
+
+# ========== 后端服务（测试平台专用，锁死版本） ==========
+fastapi==0.109.1
+uvicorn==0.24.0
+sqlalchemy==2.0.23
+apscheduler==3.10.4
+pydantic==2.4.2
+loguru==0.7.3
+
+# ========== 登录鉴权（中型项目标配） ==========
+python-jose[cryptography]
+
+allure-python-commons~=2.16.0

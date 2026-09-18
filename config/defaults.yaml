@@ -1,0 +1,95 @@
+# ============================================================
+# 框架级默认值（Layer 1: 所有环境共享，变化频率极低）
+#
+# Config 加载顺序: defaults.yaml → deep_merge(env.yaml) → .env 覆盖凭证
+# 所以 env.yaml 里只需要写"和默认值不同的部分"
+# ============================================================
+
+# ---------- 重试（所有类型请求共用的指数退避策略） ----------
+retry:
+  max_attempts: 2
+  wait_seconds: 1.0
+  backoff: true           # 指数退避: 1s → 2s → 4s
+  jitter: true            # 额外 +-20% 随机抖动，避免惊群
+
+# ---------- 数据库连接池（SQLAlchemy 参数，所有驱动通用） ----------
+db:
+  driver: "mysql"
+  pool_size: 5
+  max_overflow: 10
+  pool_recycle: 1800      # MySQL 默认 wait_timeout=28800，建议 < 3600
+
+# ---------- UI 运行参数（Playwright 默认） ----------
+ui:
+  headless: true
+  slow_mo: 0
+  viewport:
+    width: 1920
+    height: 1080
+  default_timeout: 15000
+  # 多框架 Loading 遮罩通用选择器
+  mask_selector: ".el-loading-mask, .k-loading-mask, .ant-spin, .loading-mask"
+  stable_ms: 300
+  trace: true
+
+# ---------- Mock ----------
+mock:
+  enabled: false
+  rules_dir: "mock_fastAPI/rules"
+  host: "127.0.0.1"
+  port: 8765
+
+# ---------- Token 池 ----------
+token_pool:
+  enabled: true
+  cache_dir: "reports/cache"
+  default_expiry: 3600
+
+# ---------- 性能阈值（Locust 跑完自动校验的基线） ----------
+performance:
+  p95_response_ms: 3000
+  p99_response_ms: 8000
+  error_rate: 0.01
+  # rps_min 不设，按业务线不同单独配
+
+# ---------- 日志 ----------
+log:
+  log_level: "INFO"
+  dir: "reports/logs"
+  rotation: "10 MB"
+  retention: "7 days"
+
+# ---------- 契约测试（默认关闭） ----------
+contracts:
+  enabled: false
+  dir: "contracts"
+  broker_url: ""
+  consumer_version: "1.0.0"
+
+# ---------- 报告与失败保全 ----------
+report:
+  allure_dir: "reports/allure-results"
+  junit_xml: "reports/junit.xml"
+  artifacts:
+    screenshot: true
+    html_snapshot: true
+    trace_zip: true
+    network_log: true
+    dir: "reports/artifacts"
+
+# ---------- 告警 ----------
+notify:
+  smtp_server: "smtp.qq.com"
+  smtp_port: 587
+  use_tls: true
+  mail_password: ""         # 由 .env 的 SMTP_PASSWORD 注入
+  lark_webhook: ""
+  dingtalk_webhook: ""
+
+# ---------- 定时调度 ----------
+scheduler:
+  enabled: false
+  cleanup:
+    enabled: true
+    keep_days: 30
+    cron: "0 3 * * *"

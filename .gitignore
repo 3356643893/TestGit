@@ -1,0 +1,54 @@
+# 虚拟环境
+.venv/
+venv/
+env/
+
+# IDE 配置（PyCharm / VS Code / Vim）
+.idea/**/workspace.xml
+.idea/**/shelf/
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries/
+.idea/**/dataSources/
+.idea/**/dataSources.local.xml
+.vscode/
+*.swp
+
+# 测试缓存
+.pytest_cache/
+__pycache__/
+*.pyc
+
+# 环境变量文件（.env.example 是模板，需要进仓库）
+.env
+.env.local
+.env.*.local
+
+# 环境配置文件（含敏感凭据，env.yaml.example 是模板）
+config/env.yaml
+
+# 日志文件
+*.log
+logs/
+
+# 报告文件
+reports/
+allure-report/
+
+# 数据库文件
+*.db
+*.sqlite
+
+# 调试/诊断脚本（含测试密码，不入库）
+_diag*.py
+_fix*.py
+sys.stdout
+
+# 前端依赖与构建产物
+web/frontend/node_modules/
+web/frontend/dist/
+web/frontend/.vite/
+
+# OS 临时文件
+.DS_Store
+Thumbs.db

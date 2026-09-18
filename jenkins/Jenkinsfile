@@ -1,0 +1,73 @@
+// ============================================================
+// Jenkins Pipeline（Windows 环境）
+// 备用方案：如果有本地 Windows Jenkins 服务器
+//
+// 前置条件:
+//   1. Windows 上安装 Jenkins
+//   2. 安装 Allure Jenkins Plugin
+//   3. 安装 Email Extension Plugin
+//   4. Jenkins → Manage → Configure System 配置邮件 SMTP
+// ============================================================
+
+pipeline {
+    agent any
+
+    environment {
+        // Jenkins 凭据管理 → 添加 Secret Text，ID 为 git-credentials
+        // 或在 Jenkins 系统配置中填入
+        APP_ENV = ""
+        MAIL_TO = ""
+    }
+
+    stages {
+        stage("拉取代码") {
+            steps {
+                git url: "https://gitee.com/Amorous_jy/test-gitee.git", branch: "master"
+            }
+        }
+
+        stage("环境准备") {
+            steps {
+                bat """
+                    python -m pip install --upgrade pip -q
+                    python -m pip install -r requirements.txt -q
+                    if not exist config\\env.yaml copy config\\env.yaml.example config\\env.yaml
+                """
+            }
+        }
+
+        stage("冒烟测试") {
+            steps {
+                bat """
+                    python -m pytest testcases/ -v -m smoke --alluredir=reports/allure-results --tb=short
+                """
+            }
+        }
+
+        stage("全量回归测试") {
+            steps {
+                bat """
+                    python -m pytest testcases/ -v --alluredir=reports/allure-results --tb=short
+                """
+            }
+        }
+    }
+
+    post {
+        always {
+            allure includeResults: "reports/allure-results", reportDir: "allure-report"
+            emailext(
+                to: "${env.MAIL_TO}",
+                subject: "[Jenkins] 自动化测试执行完毕",
+                body: "构建链接: ${env.BUILD_URL}\nAllure 报告: ${env.BUILD_URL}allure/"
+            )
+        }
+        failure {
+            emailext(
+                to: "${env.MAIL_TO}",
+                subject: "[Jenkins] 自动化测试失败",
+                body: "构建失败，请检查日志: ${env.BUILD_URL}console"
+            )
+        }
+    }
+}
